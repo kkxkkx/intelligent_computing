@@ -7,15 +7,16 @@ import matplotlib.pyplot as plt
 
 class GA(object):
     def __init__(self, num_city, num_total, iteration, data):
-        self.num_city = num_city
-        self.num_total = num_total
+        self.num_city = num_city    #城市个数
+        self.num_total = num_total  #种群个数
         self.scores = []
-        self.iteration = iteration
-        self.location = data
-        self.ga_choose_ratio = 0.2
-        self.mutate_ratio = 0.2
-        # fruits中存每一个个体是下标的list
+        self.iteration = iteration  #迭代次数
+        self.location = data        #城市坐标
+        self.ga_choose_ratio = 0.2  #gc概率
+        self.mutate_ratio = 0.2     #突变概率
+        # fruits是所有的种群，每个种群中是一种路线
         self.fruits = self.random_init(num_total, num_city)
+        #dis_mat记录了所有点之间的距离
         self.dis_mat = self.compute_dis_mat(num_city, data)
 
         # 显示初始化后的最佳路径
@@ -50,12 +51,13 @@ class GA(object):
                     continue
                 a = location[i]
                 b = location[j]
-                tmp = np.sqrt(sum([(x[0] - x[1]) ** 2 for x in zip(a, b)]))
+                tmp = np.sqrt(sum((x[0] - x[1]) ** 2 for x in zip(a, b)))
                 dis_mat[i][j] = tmp
         return dis_mat
 
     # 计算路径长度
     def compute_pathlen(self, path, dis_mat):
+        #得到第一个城市和最后一个城市之间的距离
         try:
             a = path[0]
             b = path[-1]
@@ -73,6 +75,7 @@ class GA(object):
     def compute_adp(self, fruits):
         adp = []
         for fruit in fruits:
+            #种群是整数时，抛出异常
             if isinstance(fruit, int):
                 import pdb
                 pdb.set_trace()
@@ -206,7 +209,7 @@ class GA(object):
             if tmp_best_score > best_score:
                 best_score = tmp_best_score
                 BEST_LIST = tmp_best_one
-            print(i)
+            #print(i)
         print(1./best_score)
         plt.subplot(2, 2, 4)
         plt.title('convergence curve')
@@ -241,7 +244,7 @@ def read_tsp(path):
 data = read_tsp('data/st14.tsp')
 
 data = np.array(data)
-plt.suptitle('GA in st14.tsp')
+plt.suptitle('GA in st70.tsp')
 data = data[:, 1:]
 plt.subplot(2, 2, 1)
 plt.title('raw data')
