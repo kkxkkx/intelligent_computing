@@ -91,8 +91,10 @@ class GA(object):
 
     def ga_cross(self, x, y):
         len_ = len(x)
+        #二者长度不一样抛出异常
         assert len(x) == len(y)
         path_list = [t for t in range(len_)]
+        #截取长度为2的随机数
         order = list(random.sample(path_list, 2))
         order.sort()
         start, end = order
@@ -184,8 +186,8 @@ class GA(object):
             # 变异
             if np.random.rand() < self.mutate_ratio:
                 gene_x_new = self.ga_mutate(gene_x_new)
-            if np.random.rand() < self.mutate_ratio:
-                gene_y_new = self.ga_mutate(gene_y_new)
+           # if np.random.rand() < self.mutate_ratio:
+           #    gene_y_new = self.ga_mutate(gene_y_new)
             x_adp = 1. / self.compute_pathlen(gene_x_new, self.dis_mat)
             y_adp = 1. / self.compute_pathlen(gene_y_new, self.dis_mat)
             # 将适应度高的放入种群中
@@ -240,16 +242,20 @@ def read_tsp(path):
     data = tmp
     return data
 
-
+#读取数据
 data = read_tsp('data/st14.tsp')
-
 data = np.array(data)
-plt.suptitle('GA in st70.tsp')
+plt.suptitle('GA in st14.tsp')
+#将每个城市的编号去掉
 data = data[:, 1:]
+#将当前窗口划分成2X2的网格，在1位置创建坐标图
 plt.subplot(2, 2, 1)
 plt.title('raw data')
+#show_data加入所有的城市，并在最后一个城市后加上第一个城市
 show_data = np.vstack([data, data[0]])
+#确定x轴和y轴的数据
 plt.plot(data[:, 0], data[:, 1])
+#最好假设为无穷大
 Best=np.inf
 Best_path = None
 
