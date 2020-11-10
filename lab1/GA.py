@@ -13,7 +13,7 @@ class GA(object):
         self.iteration = iteration  #迭代次数
         self.location = data        #城市坐标
         self.ga_choose_ratio = 0.2  #gc概率
-        self.mutate_ratio = 0.2     #突变概率
+        self.mutate_ratio = 0.1     #突变概率
         # fruits是所有的种群，随机生成种群
         self.fruits = self.random_init(num_total, num_city)
         #dis_mat记录了所有点之间的距离
@@ -82,12 +82,6 @@ class GA(object):
             length = self.compute_pathlen(fruit, self.dis_mat)
             adp.append(1.0 / length)
         return np.array(adp)
-
-    def swap_part(self, list1, list2):
-        index = len(list1)
-        list = list1 + list2
-        list = list[::-1]
-        return list[:index], list[index:]
     
     #交叉
     #x,y是两个基因（路径），进行染色体交叉
@@ -155,7 +149,6 @@ class GA(object):
 
     #使用轮盘赌算法进行选择,获得一个新种群
     def ga_choose(self, genes_score, genes_choose):
-
         sum_score = sum(genes_score)
         #算出每个种群的累积概率
         score_ratio = [sub * 1.0 / sum_score for sub in genes_score]
@@ -173,14 +166,16 @@ class GA(object):
                     index2 = i
             if rand1 < 0 and rand2 < 0:
                 break
+
         return list(genes_choose[index1]), list(genes_choose[index2])
 
     #突变
-    #gene是一个种群，即一个路径，变异是随机截取基因中一段，进行倒置。
+    #gene是一个种群，即一个路径，变异是随机截取基因中一段，进行倒置
     def ga_mutate(self, gene):
         path_list = [t for t in range(len(gene))]
         order = list(random.sample(path_list, 2))
-        start, end = min(order), max(order)
+        order.sort()
+        start, end =order
         tmp = gene[start:end]
         # np.random.shuffle(tmp)
         #从最后一个元素到第一个元素遍历一遍
@@ -286,7 +281,7 @@ Best=np.inf
 Best_path = None
 
 #得到适应度最高的基因，对应的适应度
-foa = GA(num_city=data.shape[0], num_total=50, iteration=400, data=data.copy())
+foa = GA(num_city=data.shape[0], num_total=30, iteration=75, data=data.copy())
 #得到最优的路线和长度
 path, path_len = foa.run()
 if path_len < Best:
